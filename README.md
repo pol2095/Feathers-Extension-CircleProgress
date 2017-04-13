@@ -16,6 +16,8 @@ The CircleProgress displays the progress of a task over time. Non-interactive.
 * [Adobe AIR 23.0](https://get.adobe.com/air/) or [Adobe Flash Player 19.0](https://get.adobe.com/fr/flashplayer/)
 * [Starling Framework 2.1](https://github.com/Gamua/Starling-Framework)
 * [Feathers Framework 3.1](https://feathersui.com/download/)
-* Libraries required :<br />
-	- [Starling-Extension-Graphics 2.0](https://github.com/StarlingGraphics/Starling-Extension-Graphics)<br />
-	- [TextureMaskStyle](https://gist.github.com/PrimaryFeather/d13b8d14d329a364c7cb)
+
+## Libraries required
+
+* [Starling-Extension-Graphics 2.0](https://github.com/StarlingGraphics/Starling-Extension-Graphics)
+* [TextureMaskStyle](https://gist.github.com/PrimaryFeather/d13b8d14d329a364c7cb)
