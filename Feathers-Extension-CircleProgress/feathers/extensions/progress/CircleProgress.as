@@ -26,7 +26,6 @@ package feathers.extensions.progress
 	{
 		private var field:TextField;
 		private var format:TextFormat = new TextFormat();
-		//private var color:uint = 0x000000;
 		private var child:Shape;
 		private var backCircle:Image;
 		private var percentage:Number = 0;
@@ -330,7 +329,6 @@ package feathers.extensions.progress
 			if( isNaN(this.explicitHeight) ) this.height = 100;
 			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			
-			//format.align = "right";
 			format.font = textFont;
 			format.color = textColor;
 			format.size = textSize;
@@ -338,7 +336,6 @@ package feathers.extensions.progress
 			field.autoSize = "right";
 			var fieldWidth:Number = field.width;
 			var fieldHeight:Number = field.height;
-			//field.border=true;
 			field.autoSize = "none";
 			field.width = fieldWidth;
 			field.height = fieldHeight;
@@ -351,7 +348,7 @@ package feathers.extensions.progress
 			createBackCircle();
 			
 			child = new Shape();
-			child.graphics.beginFill(color);
+			child.graphics.beginFill(0x000000);
 			drawPieMask(child.graphics, percentage);
 			child.graphics.endFill();
 			addChild(child);
@@ -363,17 +360,16 @@ package feathers.extensions.progress
 			addChild(_canvas);
 			
 			var child2:Shape = new Shape();
-			child2.graphics.beginFill(0x000000); //0xFF0000);
+			child2.graphics.beginFill(color);
 			child2.graphics.drawCircle(0,0, this.height/2);
 			child2.graphics.endFill();
 			child2.x=this.width/2;
 			child2.y=this.height/2;
 			
 			var child3:Shape = new Shape();
-			child3.graphics.beginFill(0x000000); //);
+			child3.graphics.beginFill(0x000000);
 			child3.graphics.drawCircle(0,0, this.height/2 - 5);
 			child3.graphics.endFill();
-			//child2.addChild(child3);
 			child3.x=this.width/2;
 			child3.y=this.height/2;
 			
@@ -385,9 +381,6 @@ package feathers.extensions.progress
 			var style:TextureMaskStyle = new TextureMaskStyle();
 			_canvas.style = style;
 			child.mask = _canvas;
-					
-			/*cadFreq=Math.round(stage.starling.nativeStage.frameRate/12);
-			addEventListener(Event.ENTER_FRAME, loop);*/
 		}
 		
 		private function drawPieMask(graphics:Graphics, percentage:Number, radius:Number = 50, x:Number = 0, y:Number = 0, rotation:Number = 0, sides:int = 6):void
@@ -398,11 +391,6 @@ package feathers.extensions.progress
 			if (sides < 3) sides = 3; // 3 sides minimum
 			// Increase the length of the radius to cover the whole target
 			radius /= Math.cos(1/sides * Math.PI);
-			// Shortcut function
-			/*var lineToRadians:Function = function(rads:Number):void
-			{
-				graphics.lineTo(Math.cos(rads) * radius + x, Math.sin(rads) * radius + y);
-			};*/
 			// Find how many sides we have to draw
 			var sidesToDraw:int = Math.floor(percentage/100 * sides);
 			for (var i:int = 0; i <= sidesToDraw; i++)
@@ -417,35 +405,13 @@ package feathers.extensions.progress
 			graphics.lineTo(Math.cos(rads) * radius + x, Math.sin(rads) * radius + y);
 		}
 		
-		/*private var i:uint;
-		private var cad:uint;
-		private var cadFreq:uint;
-		private var child:Shape;
-		private var percentage:Number = 0;*/
-		/*protected function loop(event:Event):void
-		{
-			if(cad == cadFreq-1) {
-				percentage += 1;
-				if(percentage == 101) percentage = 1;
-			
-				field.text = percentage+"%";
-				child.graphics.clear();
-				child.graphics.beginFill(color); //0x0000FF);
-				drawPieMask(child.graphics, percentage, 100);
-				child.graphics.endFill();
-				i++;
-				if(i >= 12) i=0;
-				cad=0;
-			}
-				else cad++;
-		}*/
 		private function change():void
 		{			
 			percentage = Math.round( ((this._value - this._minimum) / (this._maximum - this._minimum)) * 100 );
 			
 			field.text = percentage+"%";
 			child.graphics.clear();
-			child.graphics.beginFill(color); //0x0000FF);
+			child.graphics.beginFill(0x000000);
 			drawPieMask(child.graphics, percentage, 100);
 			child.graphics.endFill();
 		}
@@ -465,7 +431,7 @@ package feathers.extensions.progress
 			child.y=this.height/2;
 			
 			var child2:Shape = new Shape();
-			child2.graphics.beginFill(0x000000); //);
+			child2.graphics.beginFill(0x000000);
 			child2.graphics.drawCircle(0,0, this.height/2 - 5);
 			child2.graphics.endFill();
 			child2.x=this.width/2;
@@ -476,52 +442,5 @@ package feathers.extensions.progress
 			_renderTexture.draw(child);
 			_renderTexture.draw(child2);
 		}
-		
-		/*private function invalidateHandler():void
-		{
-			this.invalidate(INVALIDATION_FLAG_LAYOUT);
-		}*/
-		
- 		/**
-		 * @private
-		 */
-		/*override protected function draw():void
-        {
-			this.autoSizeIfNeeded();
-        }*/
-		/**
-		 * @private
-		 */
-        /*protected function autoSizeIfNeeded():Boolean
-        {
-            var needsWidth:Boolean = isNaN(this.explicitWidth);
-            var needsHeight:Boolean = isNaN(this.explicitHeight);
-            if(!needsWidth && !needsHeight)
-            {
-                return false;
-            }
-			
-            var newWidth:Number = this.explicitWidth;
-            if(needsWidth)
-            {
-                //newWidth = this.graphics.bounds.x + this.graphics.bounds.width;
-            }
-            var newHeight:Number = this.explicitHeight;
-            if(needsHeight)
-            {
-                //newHeight = this.graphics.bounds.y + this.graphics.bounds.height;
-            }
- 
-            return this.setSizeInternal(newWidth, newHeight, false);
-        }*/
-		
-		/**
-		 * @private
-		 */
-		/*override public function dispose():void
-		{
-			//
-			super.dispose();
-		}*/
 	}
 }
