@@ -18,9 +18,7 @@ package feathers.extensions.progress
 	import feathers.core.FeathersControl;
  
 	/**
-	 * The Canvas supports basic vector drawing functionality.
-	 *
-	 * @see feathers.extensions.canvas.CanvasDisplayObject
+	 * The CircleProgress displays the progress of a task over time. Non-interactive.
 	 */
 	public class CircleProgress extends FeathersControl
 	{
