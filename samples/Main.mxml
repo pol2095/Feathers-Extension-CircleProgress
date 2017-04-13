@@ -1,0 +1,41 @@
+<f:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:f="library://ns.feathersui.com/mxml"
+	theme="feathers.themes.MetalWorksDesktopTheme"
+	creationComplete="creationCompleteHandler(event)"
+	xmlns:components="feathers.extensions.progress.*">
+		
+	<fx:Script>
+		<![CDATA[
+			import flash.events.TimerEvent;
+			
+			private var myTimer:Timer = new Timer(1000);
+			private function creationCompleteHandler( event:Event ):void
+			{
+				myTimer.addEventListener(TimerEvent.TIMER, timerHandler);
+			}
+			private function triggeredHandler100( event:Event ):void
+			{
+				circleProgress.value = 100;
+			}
+			private function loop_triggeredHandler( event:Event ):void
+			{
+				myTimer.start();
+			}
+			private var percentage:int = 0;
+			private function timerHandler(e:TimerEvent):void
+			{
+				percentage++;
+				if(percentage == 101) percentage = 1;
+				circleProgress.value = percentage;
+			}
+		]]>
+	</fx:Script>
+	
+	<f:layout>
+		<f:VerticalLayout/>
+	</f:layout>
+	<components:CircleProgress id="circleProgress" width="200" height="200" maximum="100"/>
+	<f:Button label="100" triggered="triggeredHandler100(event)"/>
+	<f:Button label="loop" triggered="loop_triggeredHandler(event)"/>
+
+</f:Application>
