@@ -321,6 +321,27 @@ package feathers.extensions.progress
 			}
 		}
 		
+		private var _thickness:Number = 5;
+
+		/**
+		 * The thickness of the circle.
+		 *
+		 * @default 5
+		 */
+		public function get thickness():Number
+		{
+			return this._thickness;
+		}
+		
+		public function set thickness(value:Number):void
+		{
+			if(this._thickness == value)
+			{
+				return;
+			}
+			this._thickness = value;
+		}
+		
 		private function addedToStageHandler(event:Event):void
 		{
 			if( isNaN(this.explicitWidth) ) this.width = 100;
@@ -366,7 +387,7 @@ package feathers.extensions.progress
 			
 			var child3:Shape = new Shape();
 			child3.graphics.beginFill(0x000000);
-			child3.graphics.drawCircle(0,0, this.height/2 - 5);
+			child3.graphics.drawCircle(0,0, this.height/2 - thickness);
 			child3.graphics.endFill();
 			child3.x=this.width/2;
 			child3.y=this.height/2;
@@ -430,7 +451,7 @@ package feathers.extensions.progress
 			
 			var child2:Shape = new Shape();
 			child2.graphics.beginFill(0x000000);
-			child2.graphics.drawCircle(0,0, this.height/2 - 5);
+			child2.graphics.drawCircle(0,0, this.height/2 - thickness);
 			child2.graphics.endFill();
 			child2.x=this.width/2;
 			child2.y=this.height/2;
