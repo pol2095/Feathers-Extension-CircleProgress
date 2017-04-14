@@ -46,8 +46,9 @@ package feathers.extensions.progress
 		 * <p>In the following example, the value is set to 12:</p>
 		 *
 		 * <listing version="3.0">
-		 * progress.minimum = 0;
-		 * progress.maximum = 100;</listing>
+		 * circleProgress.minimum = 0;
+		 * circleProgress.maximum = 100;
+		 * circleProgress.value = 12;</listing>
 		 *
 		 * @default 0
 		 *
@@ -84,8 +85,9 @@ package feathers.extensions.progress
 		 * <p>In the following example, the minimum is set to 0:</p>
 		 *
 		 * <listing version="3.0">
-		 * progress.minimum = 0;
-		 * progress.maximum = 100;</listing>
+		 * circleProgress.minimum = 0;
+		 * circleProgress.maximum = 100;
+		 * circleProgress.value = 12;</listing>
 		 *
 		 * @default 0
 		 *
@@ -120,8 +122,9 @@ package feathers.extensions.progress
 		 * <p>In the following example, the maximum is set to 100:</p>
 		 *
 		 * <listing version="3.0">
-		 * progress.minimum = 0;
-		 * progress.maximum = 100;</listing>
+		 * circleProgress.minimum = 0;
+		 * circleProgress.maximum = 100;
+		 * circleProgress.value = 12;</listing>
 		 *
 		 * @default 1
 		 *
