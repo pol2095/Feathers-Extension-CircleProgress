@@ -370,7 +370,7 @@ package feathers.extensions.progress
 			createBackCircle();
 			
 			child = new Shape();
-			child.graphics.beginFill(0x000000);
+			child.graphics.beginFill(color);
 			drawPieMask(child.graphics, percentage);
 			child.graphics.endFill();
 			addChild(child);
@@ -382,7 +382,7 @@ package feathers.extensions.progress
 			addChild(_canvas);
 			
 			var child2:Shape = new Shape();
-			child2.graphics.beginFill(color);
+			child2.graphics.beginFill(0x000000);
 			child2.graphics.drawCircle(0,0, this.height/2);
 			child2.graphics.endFill();
 			child2.x=this.width/2;
@@ -433,7 +433,7 @@ package feathers.extensions.progress
 			
 			field.text = percentage+"%";
 			child.graphics.clear();
-			child.graphics.beginFill(0x000000);
+			child.graphics.beginFill(color);
 			drawPieMask(child.graphics, percentage, 100);
 			child.graphics.endFill();
 		}
