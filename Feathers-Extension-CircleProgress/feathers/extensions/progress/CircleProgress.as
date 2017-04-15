@@ -1,15 +1,9 @@
 package feathers.extensions.progress
 {
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.geom.Matrix;
-	
 	import starling.events.Event;
-	import starling.display.BlendMode;
 	import starling.text.TextField;
 	import starling.text.TextFormat;
 	import starling.display.Image;
-	import starling.textures.RenderTexture;
 	import starling.display.Shape;
 	import starling.display.Graphics;
 	import starling.extensions.TextureMaskStyle;
@@ -345,6 +339,27 @@ package feathers.extensions.progress
 			this._thickness = value;
 		}
 		
+		private var _native:Boolean = false;
+
+		/**
+		 * If false, use starling.display.Graphics to create circles. If true, use flash.display.Graphics to create circles.
+		 *
+		 * @default false
+		 */
+		public function get native():Boolean
+		{
+			return this._native;
+		}
+		
+		public function set native(value:Boolean):void
+		{
+			if(this._native == value)
+			{
+				return;
+			}
+			this._native = value;
+		}
+		
 		private function addedToStageHandler(event:Event):void
 		{
 			if( isNaN(this.explicitWidth) ) this.width = 100;
@@ -367,8 +382,6 @@ package feathers.extensions.progress
 			addChild(field);
 			if(!this.textVisible) field.visible = false;
 			
-			createBackCircle();
-			
 			child = new Shape();
 			child.graphics.beginFill(color);
 			drawPieMask(child.graphics, percentage);
@@ -377,28 +390,14 @@ package feathers.extensions.progress
 			child.x=this.width/2;
 			child.y=this.height/2;
 			
-			var _renderTexture:RenderTexture = new RenderTexture(this.width, this.height);
-			var _canvas:Image = new Image(_renderTexture);
+			var images:Vector.<Image> = native ? CircleNative.create( this.height/2, backCircleColor, backCircleAlpha, thickness) : CircleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness);
+			
+			backCircle = images[1];
+			addChild( backCircle );
+			if(!this.backCircleVisible) backCircle.visible = false;
+			
+			var _canvas:Image = images[0];
 			addChild(_canvas);
-			
-			var child2:Shape = new Shape();
-			child2.graphics.beginFill(0x000000);
-			child2.graphics.drawCircle(0,0, this.height/2);
-			child2.graphics.endFill();
-			child2.x=this.width/2;
-			child2.y=this.height/2;
-			
-			var child3:Shape = new Shape();
-			child3.graphics.beginFill(0x000000);
-			child3.graphics.drawCircle(0,0, this.height/2 - thickness);
-			child3.graphics.endFill();
-			child3.x=this.width/2;
-			child3.y=this.height/2;
-			
-			child3.blendMode = BlendMode.ERASE;
-
-			_renderTexture.draw(child2);
-			_renderTexture.draw(child3);
 			
 			var style:TextureMaskStyle = new TextureMaskStyle();
 			_canvas.style = style;
@@ -436,33 +435,6 @@ package feathers.extensions.progress
 			child.graphics.beginFill(color);
 			drawPieMask(child.graphics, percentage, 100);
 			child.graphics.endFill();
-		}
-		 
-		private function createBackCircle():void
-		{	  
-			var _renderTexture:RenderTexture = new RenderTexture(this.width, this.height);
-			backCircle = new Image(_renderTexture);
-			addChild(backCircle);
-			if(!this.backCircleVisible) backCircle.visible = false;
-			
-			var child:Shape = new Shape();
-			child.graphics.beginFill(backCircleColor, backCircleAlpha);
-			child.graphics.drawCircle(0,0, this.height/2);
-			child.graphics.endFill();
-			child.x=this.width/2;
-			child.y=this.height/2;
-			
-			var child2:Shape = new Shape();
-			child2.graphics.beginFill(0x000000);
-			child2.graphics.drawCircle(0,0, this.height/2 - thickness);
-			child2.graphics.endFill();
-			child2.x=this.width/2;
-			child2.y=this.height/2;
-			
-			child2.blendMode = BlendMode.ERASE;
-
-			_renderTexture.draw(child);
-			_renderTexture.draw(child2);
 		}
 	}
 }
