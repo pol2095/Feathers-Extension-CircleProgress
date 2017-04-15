@@ -348,7 +348,7 @@ package feathers.extensions.progress
 		private var _native:Boolean = false;
 
 		/**
-		 * If false, use starling.display.Graphics to create circles. If true, use flash.display.Graphics to create circles.
+		 * Specifies if native display list is used to create circles.
 		 *
 		 * @default false
 		 */
