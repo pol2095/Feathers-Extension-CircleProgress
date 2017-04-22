@@ -371,6 +371,13 @@ package feathers.extensions.progress
 		
 		/**
          *  The DropShadowFilter class lets you add a drop shadow to display objects. To create the shadow, the class internally uses the BlurFilter.
+		 *
+		 * <listing version="3.0">
+		 * var shadow:DropShadowFilter = new DropShadowFilter();
+		 * shadow.distance = 10;
+		 * shadow.angle = 25;
+		 * shadow.alpha = 0.7;
+		 * circleProgress.dropShadowFilter = shadow;</listing>
          */
         public function get dropShadowFilter():DropShadowFilter
 		{
