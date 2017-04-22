@@ -13,6 +13,7 @@ package feathers.extensions.progress
 	import starling.display.Shape;
 	import starling.display.Graphics;
 	import starling.extensions.TextureMaskStyle;
+	import starling.filters.DropShadowFilter;
 	
 	import feathers.utils.math.clamp;
 	import feathers.core.FeathersControl;
@@ -366,6 +367,29 @@ package feathers.extensions.progress
 			this._native = value;
 		}
 		
+		private var _dropShadowFilter:DropShadowFilter;
+		
+		/**
+         *  The DropShadowFilter class lets you add a drop shadow to display objects. To create the shadow, the class internally uses the BlurFilter.
+         */
+        public function get dropShadowFilter():DropShadowFilter
+		{
+			return _dropShadowFilter;
+		}
+		
+        public function set dropShadowFilter(value:DropShadowFilter):void
+        {
+            if(this._dropShadowFilter == value)
+			{
+				return;
+			}
+			this._dropShadowFilter = value;
+			if(backCircle)
+			{
+				backCircle.filter = this.dropShadowFilter;
+			}
+        }
+		
 		private function addedToStageHandler(event:Event):void
 		{
 			if( isNaN(this.explicitWidth) ) this.width = 100;
@@ -399,6 +423,7 @@ package feathers.extensions.progress
 			var images:Vector.<Image> = native ? CircleNative.create( this.height/2, backCircleColor, backCircleAlpha, thickness) : CircleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness);
 			
 			backCircle = images[1];
+			if(this.dropShadowFilter) backCircle.filter = this.dropShadowFilter;
 			addChild( backCircle );
 			if(!this.backCircleVisible) backCircle.visible = false;
 			
