@@ -453,13 +453,13 @@ package feathers.extensions.progress
 			// Find how many sides we have to draw
 			var sidesToDraw:int = Math.floor(percentage/100 * sides);
 			for (var i:int = 0; i <= sidesToDraw; i++)
-			lineToRadians((i / sides) * (Math.PI * 2) + rotation, graphics, radius);
+			lineToRadians((i / sides) * (Math.PI * 2) + rotation, graphics, radius, x, y);
 			// Draw the last fractioned side
 			if (percentage/100 * sides != sidesToDraw)
-			lineToRadians(percentage/100 * (Math.PI * 2) + rotation, graphics, radius);
+			lineToRadians(percentage/100 * (Math.PI * 2) + rotation, graphics, radius, x, y);
 		}
 		// Shortcut function
-		private function lineToRadians(rads:Number, graphics:Graphics, radius:Number):void
+		private function lineToRadians(rads:Number, graphics:Graphics, radius:Number, x:Number = 0, y:Number = 0):void
 		{
 			graphics.lineTo(Math.cos(rads) * radius + x, Math.sin(rads) * radius + y);
 		}
