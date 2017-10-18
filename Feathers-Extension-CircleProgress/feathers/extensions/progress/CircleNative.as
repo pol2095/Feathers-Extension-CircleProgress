@@ -10,31 +10,27 @@ package feathers.extensions.progress
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.Shape;
+	import flash.display.Graphics;
 	import flash.display.BlendMode;
 	
 	import starling.display.Image;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 	
-	
 	public class CircleNative
 	{
-		public static function create(radius:Number, backCircleColor:int, backCircleAlpha:Number, thickness:Number):Vector.<Image>
+		private var circle:Sprite = new Sprite();
+		private var child:Sprite = new Sprite();
+		
+		public function create(radius:Number, color:int, backCircleColor:int, backCircleAlpha:Number, thickness:Number):Vector.<Image>
 		{
-			var main:Sprite = new Sprite();
-			
-			var atlasString:String='<TextureAtlas><SubTexture name="circle" x="0" y="0" width="'+(radius*2)+'" height="'+(radius*2)+'"/><SubTexture name="backCircle" x="'+(radius*2)+'" y="0" width="'+(radius*2)+'" height="'+(radius*2)+'"/></TextureAtlas>';
-			
-			var circle:Sprite = new Sprite();
-			circle.graphics.beginFill(0x0);
-			circle.graphics.drawCircle(0, 0, radius);
+			circle.mask = child;
+			circle.graphics.beginFill(color);
+			circle.graphics.drawCircle(radius, radius, radius);
 			circle.graphics.endFill();
-			main.addChild(circle);
-			circle.x=radius;
-			circle.y=radius;
 			var shape:Shape = new Shape();
 			shape.graphics.beginFill(0x0);
-			shape.graphics.drawCircle(0, 0, radius - thickness);
+			shape.graphics.drawCircle(radius, radius, radius - thickness);
 			shape.graphics.endFill();
 			circle.addChild(shape);
 			circle.blendMode = BlendMode.LAYER;
@@ -42,36 +38,76 @@ package feathers.extensions.progress
 			
 			var backCircle:Sprite = new Sprite();
 			backCircle.graphics.beginFill(backCircleColor, backCircleAlpha);
-			backCircle.graphics.drawCircle(0, 0, radius);
+			backCircle.graphics.drawCircle(radius, radius, radius);
 			backCircle.graphics.endFill();
-			main.addChild(backCircle);
-			backCircle.x=radius*3;
-			backCircle.y=radius;
 			var backShape:Shape = new Shape();
 			backShape.graphics.beginFill(0x0);
-			backShape.graphics.drawCircle(0, 0, radius - thickness);
+			backShape.graphics.drawCircle(radius, radius, radius - thickness);
 			backShape.graphics.endFill();
 			backCircle.addChild(backShape);
 			backCircle.blendMode = BlendMode.LAYER;
 			backShape.blendMode = BlendMode.ERASE;
 			
-			var bitmapData:BitmapData = new BitmapData(radius*4, radius*2, true, 0x0);
-			bitmapData.draw(main);
+			var bitmapData:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
+			bitmapData.draw(backCircle);
 			var bitmap:Bitmap = new Bitmap(bitmapData);
 			var texture:Texture = Texture.fromBitmap(bitmap);
-			var atlasXml:XML = new XML(atlasString);
-			var atlas:TextureAtlas = new TextureAtlas(texture, atlasXml);
 			var images:Vector.<Image> = new Vector.<Image>(2);
-			images[0] = new Image( atlas.getTexture("circle") );
-			images[1] = new Image( atlas.getTexture("backCircle") );
+			images[0] = null;
+			images[1] = new Image( texture );
 			
 			bitmapData.dispose();
-			circle.graphics.clear();
-			shape.graphics.clear();
+			//circle.graphics.clear();
+			//shape.graphics.clear();
 			backCircle.graphics.clear();
 			backShape.graphics.clear();
 			
 			return images;
+		}
+		
+		public function getBow(percentage:Number, radius:Number):Texture
+		{
+			var shapeBow:Shape = new Shape();
+			shapeBow.graphics.beginFill(0x0);
+			drawPieMask(shapeBow.graphics, percentage, radius);
+			shapeBow.graphics.endFill();
+			shapeBow.x = radius;
+			shapeBow.y = radius;
+			child.addChild(shapeBow);
+			
+			//circle.mask = shapeBow;
+			
+			var bitmapData:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
+			bitmapData.draw(circle);
+			var bitmap:Bitmap = new Bitmap(bitmapData);
+			var texture:Texture = Texture.fromBitmap(bitmap);
+			
+			bitmapData.dispose();
+			shapeBow.graphics.clear();
+			
+			return texture;
+		}
+		
+		private function drawPieMask(graphics:Graphics, percentage:Number, radius:Number = 50, x:Number = 0, y:Number = 0, rotation:Number = 0, sides:int = 6):void
+		{
+			rotation = -Math.PI/2;
+			// graphics should have its beginFill function already called by now
+			graphics.moveTo(x, y);
+			if (sides < 3) sides = 3; // 3 sides minimum
+			// Increase the length of the radius to cover the whole target
+			radius /= Math.cos(1/sides * Math.PI);
+			// Find how many sides we have to draw
+			var sidesToDraw:int = Math.floor(percentage/100 * sides);
+			for (var i:int = 0; i <= sidesToDraw; i++)
+			lineToRadians((i / sides) * (Math.PI * 2) + rotation, graphics, radius, x, y);
+			// Draw the last fractioned side
+			if (percentage/100 * sides != sidesToDraw)
+			lineToRadians(percentage/100 * (Math.PI * 2) + rotation, graphics, radius, x, y);
+		}
+		// Shortcut function
+		private function lineToRadians(rads:Number, graphics:Graphics, radius:Number, x:Number = 0, y:Number = 0):void
+		{
+			graphics.lineTo(Math.cos(rads) * radius + x, Math.sin(rads) * radius + y);
 		}
 	}
 }

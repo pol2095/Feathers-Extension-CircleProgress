@@ -12,9 +12,9 @@ package feathers.extensions.progress
 	import starling.display.Image;
 	import starling.display.Shape;
 	import starling.display.Graphics;
+	import starling.textures.RenderTexture;
 	import starling.extensions.TextureMaskStyle;
-	import starling.filters.DropShadowFilter;
-	
+	import starling.filters.DropShadowFilter;	
 	import feathers.utils.math.clamp;
 	import feathers.core.FeathersControl;
  
@@ -25,9 +25,12 @@ package feathers.extensions.progress
 	{
 		private var field:TextField;
 		private var format:TextFormat = new TextFormat();
-		private var child:Shape;
+		private var child:Image;
+		private var shape:Shape;
+		private var renderTexture:RenderTexture;
 		private var backCircle:Image;
 		private var percentage:Number = 0;
+		private var circleNative:CircleNative;
 		
 		public function CircleProgress()
 		{
@@ -419,27 +422,43 @@ package feathers.extensions.progress
 			addChild(field);
 			if(!this.textVisible) field.visible = false;
 			
-			child = new Shape();
-			child.graphics.beginFill(color);
-			drawPieMask(child.graphics, percentage, this.height/2);
-			child.graphics.endFill();
-			addChild(child);
-			child.x=this.width/2;
-			child.y=this.height/2;
+			if( !native )
+			{
+				shape = new Shape();
+				shape.graphics.beginFill(color);
+				drawPieMask(shape.graphics, percentage, this.height/2);
+				shape.graphics.endFill();
+				shape.x = this.width/2;
+				shape.y = this.height/2;
+				renderTexture = new RenderTexture(this.width, this.height);
+				child = new Image(renderTexture);
+				renderTexture.draw(shape);
+			}
+			else
+			{
+				circleNative = new CircleNative();
+			}
 			
-			var images:Vector.<Image> = native ? CircleNative.create( this.height/2, backCircleColor, backCircleAlpha, thickness) : CircleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness);
+			var images:Vector.<Image> = native ? circleNative.create( this.height/2, color, backCircleColor, backCircleAlpha, thickness) : CircleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness);
 			
 			backCircle = images[1];
 			if(this.dropShadowFilter) backCircle.filter = this.dropShadowFilter;
 			addChild( backCircle );
 			if(!this.backCircleVisible) backCircle.visible = false;
-			
-			var _canvas:Image = images[0];
-			addChild(_canvas);
-			
-			var style:TextureMaskStyle = new TextureMaskStyle();
-			_canvas.style = style;
-			child.mask = _canvas;
+			if( !native )
+			{
+				var _canvas:Image = images[0];
+				//addChild(_canvas);
+				
+				var style:TextureMaskStyle = new TextureMaskStyle();
+				_canvas.style = style;
+				child.mask = _canvas;
+			}
+			else
+			{
+				child = new Image( circleNative.getBow( percentage, this.height/2 ) );
+			}
+			addChild(child);
 		}
 		
 		private function drawPieMask(graphics:Graphics, percentage:Number, radius:Number = 50, x:Number = 0, y:Number = 0, rotation:Number = 0, sides:int = 6):void
@@ -469,10 +488,22 @@ package feathers.extensions.progress
 			percentage = Math.round( ((this._value - this._minimum) / (this._maximum - this._minimum)) * 100 );
 			
 			field.text = percentage+"%";
-			child.graphics.clear();
-			child.graphics.beginFill(color);
-			drawPieMask(child.graphics, percentage, this.height/2);
-			child.graphics.endFill();
+			
+			if( !native )
+			{
+				shape.graphics.clear();
+				shape.graphics.beginFill(color);
+				drawPieMask(shape.graphics, percentage, this.height/2);
+				shape.graphics.endFill();
+				renderTexture.dispose();
+				renderTexture = new RenderTexture(this.width, this.height);
+				child.texture = renderTexture;
+				renderTexture.draw(shape);
+			}
+			else
+			{
+				child.texture = circleNative.getBow( percentage, this.height/2 );
+			}
 		}
 	}
 }
