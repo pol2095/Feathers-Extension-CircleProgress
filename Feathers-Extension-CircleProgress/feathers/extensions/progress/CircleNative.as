@@ -20,12 +20,10 @@ package feathers.extensions.progress
 	public class CircleNative
 	{
 		private var circle:Sprite = new Sprite();
-		private var child:Sprite = new Sprite();
 		
-		public function create(radius:Number, color:int, backCircleColor:int, backCircleAlpha:Number, thickness:Number):Vector.<Image>
+		public function create(radius:Number, backCircleColor:int, backCircleAlpha:Number, thickness:Number):Image
 		{
-			circle.mask = child;
-			circle.graphics.beginFill(color);
+			circle.graphics.beginFill(0x0);
 			circle.graphics.drawCircle(radius, radius, radius);
 			circle.graphics.endFill();
 			var shape:Shape = new Shape();
@@ -52,9 +50,7 @@ package feathers.extensions.progress
 			bitmapData.draw(backCircle);
 			var bitmap:Bitmap = new Bitmap(bitmapData);
 			var texture:Texture = Texture.fromBitmap(bitmap);
-			var images:Vector.<Image> = new Vector.<Image>(2);
-			images[0] = null;
-			images[1] = new Image( texture );
+			var image:Image = new Image( texture );
 			
 			bitmapData.dispose();
 			//circle.graphics.clear();
@@ -62,30 +58,38 @@ package feathers.extensions.progress
 			backCircle.graphics.clear();
 			backShape.graphics.clear();
 			
-			return images;
+			return image;
 		}
 		
-		public function getBow(percentage:Number, radius:Number):Texture
+		public function getBow(percentage:Number, radius:Number, color:int):Image
 		{
-			var shapeBow:Shape = new Shape();
-			shapeBow.graphics.beginFill(0x0);
-			drawPieMask(shapeBow.graphics, percentage, radius);
-			shapeBow.graphics.endFill();
-			shapeBow.x = radius;
-			shapeBow.y = radius;
-			child.addChild(shapeBow);
+			var circleBow:Sprite = new Sprite();
+			circleBow.graphics.beginFill(0x0);
+			drawPieMask(circleBow.graphics, percentage, radius, radius, radius);
+			circleBow.graphics.endFill();
+			circleBow.addChild(circle);
+			circleBow.blendMode = BlendMode.LAYER;
+			circle.blendMode = BlendMode.ERASE;
 			
-			//circle.mask = shapeBow;
+			var child:Sprite = new Sprite();
+			child.graphics.beginFill(color);
+			drawPieMask(child.graphics, percentage, radius, radius, radius);
+			child.graphics.endFill();
+			child.addChild(circleBow);
+			child.blendMode = BlendMode.LAYER;
+			circleBow.blendMode = BlendMode.ERASE;
 			
 			var bitmapData:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
-			bitmapData.draw(circle);
+			bitmapData.draw(child);
 			var bitmap:Bitmap = new Bitmap(bitmapData);
 			var texture:Texture = Texture.fromBitmap(bitmap);
+			var image:Image = new Image( texture );
 			
 			bitmapData.dispose();
-			shapeBow.graphics.clear();
+			circleBow.graphics.clear();
+			child.graphics.clear();
 			
-			return texture;
+			return image;
 		}
 		
 		private function drawPieMask(graphics:Graphics, percentage:Number, radius:Number = 50, x:Number = 0, y:Number = 0, rotation:Number = 0, sides:int = 6):void

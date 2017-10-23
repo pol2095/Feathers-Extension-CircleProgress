@@ -13,7 +13,6 @@ package feathers.extensions.progress
 	import starling.display.Shape;
 	import starling.display.Graphics;
 	import starling.textures.RenderTexture;
-	import starling.extensions.TextureMaskStyle;
 	import starling.filters.DropShadowFilter;	
 	import feathers.utils.math.clamp;
 	import feathers.core.FeathersControl;
@@ -31,6 +30,7 @@ package feathers.extensions.progress
 		private var backCircle:Image;
 		private var percentage:Number = 0;
 		private var circleNative:CircleNative;
+		private var circleStarling:CircleStarling;
 		
 		public function CircleProgress()
 		{
@@ -424,65 +424,30 @@ package feathers.extensions.progress
 			
 			if( !native )
 			{
-				shape = new Shape();
-				shape.graphics.beginFill(color);
-				drawPieMask(shape.graphics, percentage, this.height/2);
-				shape.graphics.endFill();
-				shape.x = this.width/2;
-				shape.y = this.height/2;
-				renderTexture = new RenderTexture(this.width, this.height);
-				child = new Image(renderTexture);
-				renderTexture.draw(shape);
+				circleStarling = new CircleStarling();
 			}
 			else
 			{
 				circleNative = new CircleNative();
 			}
 			
-			var images:Vector.<Image> = native ? circleNative.create( this.height/2, color, backCircleColor, backCircleAlpha, thickness) : CircleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness);
+			var image:Image = native ? circleNative.create( this.height/2, backCircleColor, backCircleAlpha, thickness) : circleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness);
 			
-			backCircle = images[1];
+			backCircle = image;
 			if(this.dropShadowFilter) backCircle.filter = this.dropShadowFilter;
 			addChild( backCircle );
 			if(!this.backCircleVisible) backCircle.visible = false;
 			if( !native )
 			{
-				var _canvas:Image = images[0];
-				//addChild(_canvas);
-				
-				var style:TextureMaskStyle = new TextureMaskStyle();
-				_canvas.style = style;
-				child.mask = _canvas;
+				child = circleStarling.getBow( percentage, this.height/2, color );
 			}
 			else
 			{
-				child = new Image( circleNative.getBow( percentage, this.height/2 ) );
+				child = circleNative.getBow( percentage, this.height/2, color );
 			}
 			addChild(child);
 		}
-		
-		private function drawPieMask(graphics:Graphics, percentage:Number, radius:Number = 50, x:Number = 0, y:Number = 0, rotation:Number = 0, sides:int = 6):void
-		{
-			rotation = -Math.PI/2;
-			// graphics should have its beginFill function already called by now
-			graphics.moveTo(x, y);
-			if (sides < 3) sides = 3; // 3 sides minimum
-			// Increase the length of the radius to cover the whole target
-			radius /= Math.cos(1/sides * Math.PI);
-			// Find how many sides we have to draw
-			var sidesToDraw:int = Math.floor(percentage/100 * sides);
-			for (var i:int = 0; i <= sidesToDraw; i++)
-			lineToRadians((i / sides) * (Math.PI * 2) + rotation, graphics, radius, x, y);
-			// Draw the last fractioned side
-			if (percentage/100 * sides != sidesToDraw)
-			lineToRadians(percentage/100 * (Math.PI * 2) + rotation, graphics, radius, x, y);
-		}
-		// Shortcut function
-		private function lineToRadians(rads:Number, graphics:Graphics, radius:Number, x:Number = 0, y:Number = 0):void
-		{
-			graphics.lineTo(Math.cos(rads) * radius + x, Math.sin(rads) * radius + y);
-		}
-		
+				
 		private function change():void
 		{			
 			percentage = Math.round( ((this._value - this._minimum) / (this._maximum - this._minimum)) * 100 );
@@ -491,18 +456,11 @@ package feathers.extensions.progress
 			
 			if( !native )
 			{
-				shape.graphics.clear();
-				shape.graphics.beginFill(color);
-				drawPieMask(shape.graphics, percentage, this.height/2);
-				shape.graphics.endFill();
-				renderTexture.dispose();
-				renderTexture = new RenderTexture(this.width, this.height);
-				child.texture = renderTexture;
-				renderTexture.draw(shape);
+				child.texture = circleStarling.getBow( percentage, this.height/2, color ).texture;
 			}
 			else
 			{
-				child.texture = circleNative.getBow( percentage, this.height/2 );
+				child.texture = circleNative.getBow( percentage, this.height/2, color ).texture;
 			}
 		}
 	}

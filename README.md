@@ -1,4 +1,4 @@
-# Feathers Extension CircleProgress 1.1.2
+# Feathers Extension CircleProgress 1.2
 
 Say hello to [Feathers Extension CircleProgress](https://github.com/pol2095/Feathers-Extension-CircleProgress/).
 This project add a CircleProgress control to Feathers UI, a library of light-weight, skinnable, and extensible UI controls for mobile and desktop. The components run on Starling Framework and the Adobe Flash runtimes, offering blazing fast GPU powered graphics to create a smooth and responsive experience. Build completely standalone, native applications on iOS, Android, Windows, and Mac OS X, or target Adobe Flash Player in desktop browsers.<br />
@@ -20,4 +20,3 @@ The CircleProgress displays the progress of a task over time. Non-interactive.
 ## Libraries required
 
 * [Starling-Extension-Graphics 2.0](https://github.com/StarlingGraphics/Starling-Extension-Graphics)
-* [TextureMaskStyle](https://gist.github.com/PrimaryFeather/d13b8d14d329a364c7cb)
