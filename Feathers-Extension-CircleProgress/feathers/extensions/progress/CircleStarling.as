@@ -19,13 +19,13 @@ package feathers.extensions.progress
 	{
 		private var images:Vector.<Image> = new Vector.<Image>(4);
 		
-		public function create(radius:Number, backCircleColor:int, backCircleAlpha:Number, thickness:Number):Image
+		public function create(radius:Number, backCircleColor:int, backCircleAlpha:Number, thickness:Number, color:int):Image
 		{
 			var renderTexture:RenderTexture = new RenderTexture(radius*2, radius*2);
 			images[0] = new Image(renderTexture);
 			
 			var circle:Shape = new Shape();
-			circle.graphics.beginFill(0x0);
+			circle.graphics.beginFill(color);
 			circle.graphics.drawCircle(radius, radius , radius);
 			circle.graphics.endFill();
 			
@@ -38,8 +38,6 @@ package feathers.extensions.progress
 
 			renderTexture.draw(circle);
 			renderTexture.draw(shape);
-			
-			images[0].blendMode = BlendMode.ERASE;
 			
 			var backRenderTexture:RenderTexture = new RenderTexture(radius*2, radius*2);
 			images[1] = new Image(backRenderTexture);
@@ -67,36 +65,24 @@ package feathers.extensions.progress
 			return images[1];
 		}
 		
-		public function getBow(percentage:Number, radius:Number, color:int):Image
+		public function getBow(percentage:Number, radius:Number):Image
 		{
 			var renderTexture:RenderTexture = new RenderTexture(radius*2, radius*2);
 			images[2] = new Image(renderTexture);
 			
 			var circleBow:Shape = new Shape();
 			circleBow.graphics.beginFill(0x0);
-			drawPieMask(circleBow.graphics, percentage, radius, radius, radius);
+			drawPieMask(circleBow.graphics, 100 - percentage, radius + radius / 20, radius, radius);
 			circleBow.graphics.endFill();
 			
-			renderTexture.draw(circleBow);
+			circleBow.blendMode = BlendMode.ERASE;
+			
 			renderTexture.draw(images[0]);
-			
-			var childRenderTexture:RenderTexture = new RenderTexture(radius*2, radius*2);
-			images[3] = new Image(childRenderTexture);
-			
-			var child:Shape = new Shape();
-			child.graphics.beginFill(color);
-			drawPieMask(child.graphics, percentage, radius, radius, radius);
-			child.graphics.endFill();
-			
-			images[2].blendMode = BlendMode.ERASE;
-			
-			childRenderTexture.draw(child);
-			childRenderTexture.draw(images[2]);
-			
+			renderTexture.draw(circleBow);
+						
 			circleBow.graphics.clear();
-			child.graphics.clear();
 			
-			return images[3];
+			return images[2];
 		}
 		
 		private function drawPieMask(graphics:Graphics, percentage:Number, radius:Number = 50, x:Number = 0, y:Number = 0, rotation:Number = 0, sides:int = 6):void
@@ -110,10 +96,10 @@ package feathers.extensions.progress
 			// Find how many sides we have to draw
 			var sidesToDraw:int = Math.floor(percentage/100 * sides);
 			for (var i:int = 0; i <= sidesToDraw; i++)
-			lineToRadians((i / sides) * (Math.PI * 2) + rotation, graphics, radius, x, y);
+			lineToRadians((i / sides) * (-Math.PI * 2) + rotation, graphics, radius, x, y);
 			// Draw the last fractioned side
 			if (percentage/100 * sides != sidesToDraw)
-			lineToRadians(percentage/100 * (Math.PI * 2) + rotation, graphics, radius, x, y);
+			lineToRadians(percentage/100 * (-Math.PI * 2) + rotation, graphics, radius, x, y);
 		}
 		// Shortcut function
 		private function lineToRadians(rads:Number, graphics:Graphics, radius:Number, x:Number = 0, y:Number = 0):void

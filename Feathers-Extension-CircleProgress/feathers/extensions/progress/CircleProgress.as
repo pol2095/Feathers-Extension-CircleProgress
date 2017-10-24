@@ -431,7 +431,7 @@ package feathers.extensions.progress
 				circleNative = new CircleNative();
 			}
 			
-			var image:Image = native ? circleNative.create( this.height/2, backCircleColor, backCircleAlpha, thickness) : circleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness);
+			var image:Image = native ? circleNative.create( this.height/2, backCircleColor, backCircleAlpha, thickness, color) : circleStarling.create( this.height/2, backCircleColor, backCircleAlpha, thickness, color);
 			
 			backCircle = image;
 			if(this.dropShadowFilter) backCircle.filter = this.dropShadowFilter;
@@ -439,11 +439,11 @@ package feathers.extensions.progress
 			if(!this.backCircleVisible) backCircle.visible = false;
 			if( !native )
 			{
-				child = circleStarling.getBow( percentage, this.height/2, color );
+				child = circleStarling.getBow( percentage, this.height/2 );
 			}
 			else
 			{
-				child = circleNative.getBow( percentage, this.height/2, color );
+				child = circleNative.getBow( percentage, this.height/2 );
 			}
 			addChild(child);
 		}
@@ -456,11 +456,11 @@ package feathers.extensions.progress
 			
 			if( !native )
 			{
-				child.texture = circleStarling.getBow( percentage, this.height/2, color ).texture;
+				child.texture = circleStarling.getBow( percentage, this.height/2 ).texture;
 			}
 			else
 			{
-				child.texture = circleNative.getBow( percentage, this.height/2, color ).texture;
+				child.texture = circleNative.getBow( percentage, this.height/2 ).texture;
 			}
 		}
 	}

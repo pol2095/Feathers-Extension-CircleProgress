@@ -21,9 +21,9 @@ package feathers.extensions.progress
 	{
 		private var circle:Sprite = new Sprite();
 		
-		public function create(radius:Number, backCircleColor:int, backCircleAlpha:Number, thickness:Number):Image
+		public function create(radius:Number, backCircleColor:int, backCircleAlpha:Number, thickness:Number, color:int):Image
 		{
-			circle.graphics.beginFill(0x0);
+			circle.graphics.beginFill(color);
 			circle.graphics.drawCircle(radius, radius, radius);
 			circle.graphics.endFill();
 			var shape:Shape = new Shape();
@@ -61,33 +61,24 @@ package feathers.extensions.progress
 			return image;
 		}
 		
-		public function getBow(percentage:Number, radius:Number, color:int):Image
+		public function getBow(percentage:Number, radius:Number):Image
 		{
 			var circleBow:Sprite = new Sprite();
 			circleBow.graphics.beginFill(0x0);
-			drawPieMask(circleBow.graphics, percentage, radius, radius, radius);
+			drawPieMask(circleBow.graphics, 100 - percentage, radius + radius / 20, radius, radius);
 			circleBow.graphics.endFill();
-			circleBow.addChild(circle);
-			circleBow.blendMode = BlendMode.LAYER;
-			circle.blendMode = BlendMode.ERASE;
-			
-			var child:Sprite = new Sprite();
-			child.graphics.beginFill(color);
-			drawPieMask(child.graphics, percentage, radius, radius, radius);
-			child.graphics.endFill();
-			child.addChild(circleBow);
-			child.blendMode = BlendMode.LAYER;
+			circle.addChild(circleBow);
+			//circle.blendMode = BlendMode.LAYER;
 			circleBow.blendMode = BlendMode.ERASE;
 			
 			var bitmapData:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
-			bitmapData.draw(child);
+			bitmapData.draw(circle);
 			var bitmap:Bitmap = new Bitmap(bitmapData);
 			var texture:Texture = Texture.fromBitmap(bitmap);
 			var image:Image = new Image( texture );
 			
 			bitmapData.dispose();
 			circleBow.graphics.clear();
-			child.graphics.clear();
 			
 			return image;
 		}
@@ -103,10 +94,10 @@ package feathers.extensions.progress
 			// Find how many sides we have to draw
 			var sidesToDraw:int = Math.floor(percentage/100 * sides);
 			for (var i:int = 0; i <= sidesToDraw; i++)
-			lineToRadians((i / sides) * (Math.PI * 2) + rotation, graphics, radius, x, y);
+			lineToRadians((i / sides) * (-Math.PI * 2) + rotation, graphics, radius, x, y);
 			// Draw the last fractioned side
 			if (percentage/100 * sides != sidesToDraw)
-			lineToRadians(percentage/100 * (Math.PI * 2) + rotation, graphics, radius, x, y);
+			lineToRadians(percentage/100 * (-Math.PI * 2) + rotation, graphics, radius, x, y);
 		}
 		// Shortcut function
 		private function lineToRadians(rads:Number, graphics:Graphics, radius:Number, x:Number = 0, y:Number = 0):void
