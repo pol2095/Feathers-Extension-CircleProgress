@@ -454,6 +454,8 @@ package feathers.extensions.progress
 			
 			field.text = percentage+"%";
 			
+			if( child.texture ) child.texture.dispose();
+			
 			if( !native )
 			{
 				child.texture = circleStarling.getBow( percentage, this.height/2 ).texture;
@@ -462,6 +464,12 @@ package feathers.extensions.progress
 			{
 				child.texture = circleNative.getBow( percentage, this.height/2 ).texture;
 			}
+		}
+		
+		override public function dispose():void
+		{			
+			if( child.texture ) child.texture.dispose();
+			super.dispose();
 		}
 	}
 }
