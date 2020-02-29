@@ -468,6 +468,7 @@ package feathers.extensions.progress
 		
 		override public function dispose():void
 		{			
+			if( backCircle.texture ) backCircle.texture.dispose();
 			if( child.texture ) child.texture.dispose();
 			super.dispose();
 		}
