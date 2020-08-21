@@ -458,7 +458,7 @@ package feathers.extensions.progress
 		{			
 			percentage = Math.round( ((this._value - this._minimum) / (this._maximum - this._minimum)) * 100 );
 			
-			field.text = percentage+"%";
+			if( field ) field.text = percentage+"%";
 			
 			if( child.texture ) child.texture.dispose();
 			
