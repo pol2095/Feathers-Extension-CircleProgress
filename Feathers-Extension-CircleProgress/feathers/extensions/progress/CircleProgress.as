@@ -36,7 +36,7 @@ package feathers.extensions.progress
 		{
 			super();
 			
-			this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			//this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 		}
 		
 		/**
@@ -400,11 +400,17 @@ package feathers.extensions.progress
 			}
         }
 		
-		private function addedToStageHandler(event:Event):void
+		/**
+		 * @private
+		 */
+		override protected function initialize():void
 		{
+			super.initialize();
+		/*private function addedToStageHandler(event:Event):void
+		{*/
 			if( isNaN(this.explicitWidth) ) this.width = 100;
 			if( isNaN(this.explicitHeight) ) this.height = 100;
-			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
+			//this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			
 			format.font = textFont;
 			format.color = textColor;
