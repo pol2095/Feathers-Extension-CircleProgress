@@ -460,7 +460,11 @@ package feathers.extensions.progress
 			
 			if( field ) field.text = percentage+"%";
 			
-			if( child.texture ) child.texture.dispose();
+			if( child.texture )
+			{
+				child.texture.root.onRestore = null;
+				child.texture.dispose();
+			}
 			
 			if( !native )
 			{

@@ -6,7 +6,6 @@ accordance with the terms of the accompanying license agreement.
 */
 package feathers.extensions.progress
 {
-	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.Shape;
@@ -48,15 +47,21 @@ package feathers.extensions.progress
 			
 			var bitmapData:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
 			bitmapData.draw(backCircle);
-			var bitmap:Bitmap = new Bitmap(bitmapData);
-			var texture:Texture = Texture.fromBitmap(bitmap);
+			var texture:Texture = Texture.fromBitmapData(bitmapData);
+			// give the texture a way to recreate itself
+			texture.root.onRestore = function():void
+			{
+				var restoreBMD:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
+				restoreBMD.draw(backCircle);
+				texture.root.uploadBitmapData(restoreBMD);
+			}
 			var image:Image = new Image( texture );
 			
 			bitmapData.dispose();
 			//circle.graphics.clear();
 			//shape.graphics.clear();
-			backCircle.graphics.clear();
-			backShape.graphics.clear();
+			//backCircle.graphics.clear();
+			//backShape.graphics.clear();
 			
 			return image;
 		}
@@ -73,8 +78,22 @@ package feathers.extensions.progress
 			
 			var bitmapData:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
 			bitmapData.draw(circle);
-			var bitmap:Bitmap = new Bitmap(bitmapData);
-			var texture:Texture = Texture.fromBitmap(bitmap);
+			var texture:Texture = Texture.fromBitmapData(bitmapData);
+			texture.root.onRestore = function():void
+			{
+				var restoreBow:Sprite = new Sprite();
+				restoreBow.graphics.beginFill(0x0);
+				drawPieMask(restoreBow.graphics, 100 - percentage, radius + radius / 20, radius, radius);
+				restoreBow.graphics.endFill();
+				circle.addChild(restoreBow);
+				restoreBow.blendMode = BlendMode.ERASE;
+				
+				var restoreBMD:BitmapData = new BitmapData(radius*2, radius*2, true, 0x0);
+				restoreBMD.draw(circle);
+				texture.root.uploadBitmapData(restoreBMD);
+				restoreBMD.dispose();
+				restoreBow.graphics.clear();
+			}
 			var image:Image = new Image( texture );
 			
 			bitmapData.dispose();
