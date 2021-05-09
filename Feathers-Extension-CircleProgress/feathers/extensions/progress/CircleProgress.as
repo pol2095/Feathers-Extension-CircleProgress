@@ -462,7 +462,7 @@ package feathers.extensions.progress
 			
 			if( child.texture )
 			{
-				child.texture.root.onRestore = null;
+				//child.texture.root.onRestore = null;
 				child.texture.dispose();
 			}
 			
